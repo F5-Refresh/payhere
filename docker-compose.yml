@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+
+    web:
+        build: .
+        
+        stdin_open: true
+
+        volumes:
+            - .:/var/www/payhere
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+
+    db:
+        env_file: ".env"
+
+        image: mysql:5.7
+        
+        ports:
+            - 3306:3306
+        volumes:
+            - ./data/db:/var/lib/mysql
+        environment:
+            - MYSQL_TCP_PORT=${MYSQL_TCP_PORT}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
