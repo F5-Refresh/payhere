@@ -11,13 +11,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
 import pymysql
-
-from dotenv      import load_dotenv, find_dotenv
 from django.core.exceptions import ImproperlyConfigured
-
+from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
+
 
 def get_env_variable(var_name):
     try:
@@ -25,6 +25,7 @@ def get_env_variable(var_name):
     except KeyError:
         error_msg = f'Set the {var_name} environment variable'
         raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -51,6 +52,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
+    'users',
+    'account_books',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +98,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': get_env_variable('MYSQL_ROOT_PASSWORD'),
         'HOST': 'db',
-        'PORT': get_env_variable('MYSQL_TCP_PORT')
+        'PORT': get_env_variable('MYSQL_TCP_PORT'),
     }
 }
 
