@@ -3,12 +3,12 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.serializers import UserInfoSerializer, UserSignInSerializer
 
+
 # Create your views here.
-
-
 class UserSignInView(APIView):
     """로그인 구현 View
 
@@ -28,7 +28,8 @@ class UserSignInView(APIView):
     def post(self, request):
         serializer = UserSignInSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.user_signin, status=status.HTTP_200_OK)
+
+        return Response(serializer.user_signin(data=request.data), status=status.HTTP_200_OK)
 
 
 class UserSignOutView(APIView):
@@ -40,14 +41,15 @@ class UserSignOutView(APIView):
     refresh_token을 받아 해당 토큰을 폐기한다.
 
     param :
-        refresh_token   - 토큰
+        refresh_token       - 토큰
     """
 
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=UserSignInSerializer, responses={201: UserInfoSerializer})
     def post(self, request):
-        Refresh_token = request.data["refresh_token"]
+        Refresh_token = request.data["refresh"]
         token = RefreshToken(Refresh_token)
         token.blacklist()
+
         return Response({"detail": "success, signout"}, status=status.HTTP_200_OK)
