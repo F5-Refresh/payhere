@@ -8,15 +8,14 @@ from django.db import models
 class AccountBook(TimeStampModel):
     user = models.ForeignKey('users.User', related_name='account_books', verbose_name='유저', on_delete=models.CASCADE)
     book_name = models.CharField(max_length=100)
-    budget = models.DecimalField(max_digits=9, decimal_places=0) # 수입, 지출 구분
+    budget = models.DecimalField(max_digits=9, decimal_places=0)  # 수입, 지출 구분
     delete_flag = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'account_books'
-        
+
     def __str__(self):
         return f'user: {self.user.email} / book_name: {self.book_name}'
-     
 
 
 # 가계부 상세내용
@@ -26,7 +25,7 @@ class AccountDetail(TimeStampModel):
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.CharField(blank=True, null=True, max_length=255)
-    account_type = models.CharField(max_length=10) # 수입, 지출 구분
+    account_type = models.CharField(max_length=10)  # 수입, 지출 구분
     delete_flag = models.BooleanField(default=False)
 
     class Meta:
