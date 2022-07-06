@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, TimeStampModel):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=50, unique=True)
     is_admin = models.BooleanField(default=False)
