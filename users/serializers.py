@@ -1,6 +1,3 @@
-import re
-
-import bcrypt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from rest_framework import exceptions, serializers
