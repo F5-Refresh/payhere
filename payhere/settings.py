@@ -149,12 +149,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+APPEND_SLASH = False
 
-############################################################################################################
 # Third party settings
 
 # endpoint slash 비활성화
-APPEND_SLASH = False
+
 AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
