@@ -5,6 +5,7 @@ from .views import sign
 
 urlpatterns = [
     path('/token/refresh', TokenRefreshView.as_view()),
+    path('/signup', sign.UserSignUpView.as_view()),
     path('/signin', sign.UserSignInView.as_view()),
     path('/signout', sign.UserSignOutView.as_view()),
 ]

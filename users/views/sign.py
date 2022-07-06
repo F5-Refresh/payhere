@@ -5,10 +5,35 @@ from rest_framework.response import Response
 from rest_framework.views import APIView, status
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.serializers import UserInfoSerializer, UserSignInSerializer
+from users.serializers import UserInfoSerializer, UserSignInSerializer, UserSignUpSerializer
 
 
 # Create your views here.
+class UserSignUpView(APIView):
+    """회원가입 구현 View
+
+    Writer: 김동규
+    Date: 2022-07-05
+
+    Post 메서드를 통해 회원가입 조건을 만족하면 DB에 회원가입 정보를 저장한다.
+
+    param :
+        email       - 이메일 주소
+        nickname    - 닉네임
+        password    - 비밀번호
+    """
+
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(request_body=UserSignUpSerializer, responses={201: UserSignUpSerializer})
+    def post(self, request):
+        serializer = UserSignUpSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+
 class UserSignInView(APIView):
     """로그인 구현 View
 
