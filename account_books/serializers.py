@@ -6,7 +6,7 @@ class AcoountCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AccountCategory
-        fields = '__all__'
+        fields = ['id', 'user', 'category_name', 'created_at', 'modified_at']
 
         ordering = ['category_name']
 

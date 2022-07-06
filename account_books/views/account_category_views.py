@@ -22,7 +22,7 @@ class AcoountCategoryView(APIView):
         if account_category.is_valid():
             account_category.save()
             return Response(status=status.HTTP_201_CREATED)
-        return Response(account_category.error_messages, status=status.HTTP_400_BAD_REQUEST)
+        return Response(account_category.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def patch(self, req, account_category_id):
         account_category = AccountCategory.objects.filter(id=account_category_id).first()
@@ -34,7 +34,7 @@ class AcoountCategoryView(APIView):
         if account_category.is_valid():
             account_category.save()
             return Response(status=status.HTTP_200_OK)
-        return Response(account_category.error_messages, status=status.HTTP_400_BAD_REQUEST)
+        return Response(account_category.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, req, account_category_id):
         account_category = AccountCategory.objects.filter(id=account_category_id).first()
