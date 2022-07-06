@@ -49,7 +49,7 @@ class UserSignInView(APIView):
 
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(request_body=UserSignInSerializer, responses={201: UserInfoSerializer})
+    @swagger_auto_schema(request_body=UserSignInSerializer, responses={200: UserInfoSerializer})
     def post(self, request):
         serializer = UserSignInSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -71,7 +71,7 @@ class UserSignOutView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(request_body=UserSignInSerializer, responses={201: UserInfoSerializer})
+    @swagger_auto_schema(request_body=UserSignInSerializer, responses={200: UserInfoSerializer})
     def post(self, request):
         Refresh_token = request.data["refresh"]
         token = RefreshToken(Refresh_token)
