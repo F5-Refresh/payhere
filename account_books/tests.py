@@ -456,6 +456,8 @@ class AccountBookDetailAPITestCase(APITestCase):
         request = factory.patch(object_url, data=data, format='json', **headers)
         view = AccountBookDetailDeleteAPI.as_view()
         response = view(request, self.account_book.id, self.account_book_detail.id)
+
+        # 레코드가 삭제되었을 경우, delete_flag = True, (default=False)
         if response.data['detail'] == '레코드가 삭제되었습니다.':
             self.assertEqual(response.data['account_detail'].delete_flag, True)
         else:

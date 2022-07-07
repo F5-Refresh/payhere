@@ -56,6 +56,8 @@ class AccountBookDetailDeleteAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, book_id, accounts_id):
+
+        # delete_flag 상태만 변경해서 삭제를 구현했습니다.
         account_detail = get_object_or_404(AccountDetail, account_book=book_id, id=accounts_id)
         message = '레코드가 복구되었습니다.' if account_detail.delete_flag else '레코드가 삭제되었습니다.'
         account_detail.toggle_active()
@@ -91,8 +93,7 @@ class AccountBookDetailListAPI(APIView):
         category_detail = get_object_or_404(
             AccountCategory, user=request.user.id, id=request.data['account_category'], delete_flag=False
         )
-        print(f"'user_id': {request.user.id}, 'category_id': {request.data['account_category']}")
-        print(category_detail)
+
         serializer = AccountDetailPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
