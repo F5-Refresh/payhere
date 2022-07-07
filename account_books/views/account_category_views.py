@@ -2,10 +2,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from account_books.models import AccountCategory
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from account_books.serializers import AcoountCategoryPutSerializer, AcoountCategoryPostSerializer, AcoountCategorySerializer
 from rest_framework.permissions import  IsAuthenticated
-
-from users.models import User
 
 class AcoountCategoryView(APIView):
     
@@ -36,7 +35,8 @@ class AcoountCategoryView(APIView):
             return Response(status=status.HTTP_200_OK)
         return Response(account_category.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, req, account_category_id):
+    @api_view(['PATCH'])
+    def toggle_delete(req, account_category_id):
         account_category = AccountCategory.objects.filter(id=account_category_id).first()
         if account_category == None:
             return Response({'detail': '레코드가 존재하지 않습니다.'},status=status.HTTP_404_NOT_FOUND)
