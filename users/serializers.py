@@ -37,8 +37,8 @@ class UserInfoSerializer(serializers.Serializer):
 
 
 class UserSignInSerializer(TokenObtainPairSerializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(required=True, write_only=True, max_length=255)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, max_length=255)
 
     def user_signin(self, data):
         user = User.objects.get(email=data['email'])
