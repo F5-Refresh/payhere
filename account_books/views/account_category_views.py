@@ -28,7 +28,7 @@ class AcoountCategoryView(APIView):
         account_category = AccountCategory.objects.filter(id=account_category_id).first()
 
         if account_category == None:
-            return Response({'detail': '레코드가 존재하지 않습니다.'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': '레코드가 존재하지 않습니다.'},status=status.HTTP_404_NOT_FOUND)
         
         account_category = AcoountCategoryPutSerializer(data=req.data, instance=account_category)
         if account_category.is_valid():
