@@ -311,6 +311,10 @@ class AccountBookDetailListAPITestCase(APITestCase):
             'account_book': self.account_book.id,
         }
 
+        # 카테고리가 없을 경우, 객체를 가져올 수 없어 404 에러가 발생합니다.
+        if response.data['detail'] == "찾을 수 없습니다.":
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
         factory = APIRequestFactory()
         request = factory.post(list_url, data=data, format='json', **headers)
         view = AccountBookDetailListAPI.as_view()

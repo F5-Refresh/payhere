@@ -1,6 +1,5 @@
-from account_books.models import AccountDetail
-from account_books.serializers import (AccountDetailPostSerializer,
-                                       AccountDetailSerializer)
+from account_books.models import AccountCategory, AccountDetail
+from account_books.serializers import AccountDetailPostSerializer, AccountDetailSerializer
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -85,14 +84,21 @@ class AccountBookDetailListAPI(APIView):
         serializer = AccountDetailSerializer(account_details, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # 가계부 내역 생성: 가계부 id를 받고, 해당 가계부에서 내역을 작성합니다.
+    # 가계부 내역 생성: 가계부 id를 받고, 해당 가계부에서 내역을 작성합니다. + 해당하는 카테고리가 없을 경우 에러가 발생합니다.
     def post(self, request, book_id):
+
+        # 카테고리 id로 객체를 찾아서 가져옵니다. / 유효하지 않는 카테고리일 경우 404 에러가 나옵니다.
+        category_detail = get_object_or_404(
+            AccountCategory, user=request.user.id, id=request.data['account_category'], delete_flag=False
+        )
+        print(f"'user_id': {request.user.id}, 'category_id': {request.data['account_category']}")
+        print(category_detail)
         serializer = AccountDetailPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class AccountBookDetailListDeletedAPI(APIView):
 
