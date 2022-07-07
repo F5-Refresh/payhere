@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from core.models import TimeStamp as TimeStampModel
 from django.db import models
+from core.util import DeleteFlag
 
 
 # 가계부
@@ -21,7 +20,7 @@ class AccountBook(TimeStampModel):
 
 # 가계부 상세내용
 class AccountDetail(TimeStampModel):
-    account_category = models.ForeignKey('AccountCategory', verbose_name='카테고리', on_delete=models.CASCADE)
+    account_category = models.ForeignKey('AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING)
     account_book = models.ForeignKey('AccountBook', verbose_name='가계부', on_delete=models.CASCADE)
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
@@ -35,11 +34,12 @@ class AccountDetail(TimeStampModel):
     def __str__(self):
         return f'book_name: {self.account_book.book_name} / price: {self.price}'
 
-
 # 가계부 카테고리
-class AccountCategory(TimeStampModel):
-    category_name = models.CharField(max_length=50)
+class AccountCategory(TimeStampModel, DeleteFlag):
 
+    category_name = models.CharField(max_length=50) 
+    user = models.ForeignKey('users.User', related_name='categories', verbose_name='유저', on_delete=models.CASCADE)
+    delete_flag = models.BooleanField(default=False)
     class Meta:
         db_table = 'account_category'
 
