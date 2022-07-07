@@ -23,5 +23,5 @@ urlpatterns = [
     path('account-books/<int:book_id>/accounts', AccountBookDetailListAPI.as_view(), name='books_details'),
     path('account-books/<int:book_id>/accounts/deleted_list', AccountBookDetailListDeletedAPI.as_view(), name='book_details_deleted',),
     path('account-books/<int:book_id>/accounts/<int:accounts_id>', AccountBookDetailAPI.as_view(), name='book_detail'),
-    path('account-books/<int:book_id>/accounts/<int:accounts_id>/deleted', AccountBookDetailDeleteAPI.as_view(), name='book_detail_deleted',),
+    path('account-books/<int:book_id>/accounts/<int:accounts_id>/togle_delete', AccountBookDetailDeleteAPI.as_view(), name='book_detail_deleted',),
 ]

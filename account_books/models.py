@@ -7,7 +7,7 @@ from django.db import models
 class AccountBook(TimeStampModel, DeleteFlag):
     user = models.ForeignKey('users.User', related_name='account_books', verbose_name='유저', on_delete=models.CASCADE)
     book_name = models.CharField(max_length=100)
-    budget = models.DecimalField(max_digits=9, decimal_places=0)  # 수입, 지출 구분
+    budget = models.DecimalField(max_digits=9, decimal_places=0)
     delete_flag = models.BooleanField(default=False)
 
     class Meta:
