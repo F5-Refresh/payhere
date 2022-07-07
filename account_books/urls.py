@@ -1,6 +1,6 @@
 from django.urls import path
 
-from account_books.views import AccountBookView
+from account_books.views.account_book_views import AccountBookView
 from account_books.views.account_category_views import AcoountCategoryView
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('account-books', AccountBookView.as_view()),
     path('account-books/<int:book_id>', AccountBookView.as_view()),
     path('account-books/deleted_list', AccountBookView.deleted_list),
+    path('account-books/toggle_delete/<int:book_id>', AccountBookView.deleted_patch),
 ]
