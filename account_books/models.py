@@ -1,5 +1,6 @@
 from core.models import TimeStamp as TimeStampModel
 from django.db import models
+from core.util import DeleteFlag
 
 
 # 가계부
@@ -34,18 +35,13 @@ class AccountDetail(TimeStampModel):
         return f'book_name: {self.account_book.book_name} / price: {self.price}'
 
 # 가계부 카테고리
-class AccountCategory(TimeStampModel):
+class AccountCategory(TimeStampModel, DeleteFlag):
+
     category_name = models.CharField(max_length=50) 
     user = models.ForeignKey('users.User', related_name='categories', verbose_name='유저', on_delete=models.CASCADE)
+    delete_flag = models.BooleanField(default=False)
     class Meta:
         db_table = 'account_category'
 
     def __str__(self):
         return self.category_name
-
-    def delete(self):
-        if self.account_details.first() == None:
-            super(AccountCategory, self).delete()
-            return True
-        return False
- 
