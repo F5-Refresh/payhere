@@ -63,7 +63,7 @@ class AccountCategoryTest(APITestCase):
         # 데이터 생성 확인 테스트
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         if not AccountCategory.objects.filter(user=self.user, category_name='주거비'):
-            self.fail()
+            self.fail('데이터가 생성되지 않았습니다.')
 
     def test_patch(self):
         account_category = AccountCategory.objects.create(category_name='주비', user=self.user)
@@ -75,21 +75,18 @@ class AccountCategoryTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # 데이터 갱신 확인 테스트
         if not AccountCategory.objects.filter(id=account_category.id, user=self.user, category_name= '주거비'):
-            self.fail()
+            self.fail('데이터가 갱신되지 않았습니다')
     
-    def test_delete(self):
+    def test_toggle_delete(self):
         account_category = AccountCategory.objects.create(category_name='식비', user=self.user)
         factory = APIRequestFactory()
-        request = factory.delete('/account_category')
-        view = AcoountCategoryView.as_view()
+        request = factory.patch('/account_category/toggle_delete' )
+        view = AcoountCategoryView.toggle_delete
         force_authenticate(request, user=self.user)
         response = view(request, account_category.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # 데이터 삭제 확인 테스트
         if AccountCategory.objects.filter(id=account_category.id, delete_flag=False):
-            self.fail()
+            self.fail('데이터가 삭제되지 않았습니다.')
         response = view(request, account_category.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # 데이터 복구 확인 테스트
-        if AccountCategory.objects.filter(id=account_category.id, delete_flag=True):
-            self.fail()
