@@ -96,3 +96,9 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountDetail
         fields = '__all__'
+        
+class AccountDetailPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountDetail
+        fields = ['written_date', 'price', 'description', 'account_type', 'account_category', 'account_book']
+

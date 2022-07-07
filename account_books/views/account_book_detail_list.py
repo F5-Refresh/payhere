@@ -1,5 +1,5 @@
 from account_books.models import AccountDetail
-from account_books.serializers import AccountDetailSerializer
+from account_books.serializers import AccountDetailPostSerializer, AccountDetailSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,7 +28,7 @@ class AccountBookDetailListAPI(APIView):
 
     # 가계부 내역 생성: 가계부 id를 받고, 해당 가계부에서 내역을 작성합니다.
     def post(self, request, book_id):
-        serializer = AccountDetailSerializer(data=request.data, account_book=book_id)
+        serializer = AccountDetailPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

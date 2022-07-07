@@ -8,6 +8,8 @@ from .views.account_book_detail_list import AccountBookDetailListAPI
 from .views.account_book_detail_list_deleted import \
     AccountBookDetailListDeletedAPI
 
+app_name = 'account-book'
+
 urlpatterns = [
     path('account_category', AcoountCategoryView.as_view()),
     path('account_category/<int:account_category_id>', AcoountCategoryView.as_view()),
