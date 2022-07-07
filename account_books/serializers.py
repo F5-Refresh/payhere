@@ -45,8 +45,6 @@ class AccountBookListSerializer(serializers.ModelSerializer):
 
 # 생성, 수정
 class AccountBookCreatePatchSerializer(serializers.ModelSerializer):
-    nick_name = serializers.StringRelatedField(source="user.nick_name")
-
     class Meta:
         model = AccountBook
-        fields = ['user', 'nick_name', 'book_name', 'budget']
+        fields = ['user', 'book_name', 'budget']
