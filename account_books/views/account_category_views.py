@@ -12,7 +12,7 @@ class AcoountCategoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, req):
-        account_categorise = AccountCategory.objects.filter(user=req.user.id)
+        account_categorise = AccountCategory.objects.filter(user=req.user.id, delete_flag=False)
         serializer = AcoountCategorySerializer(account_categorise, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -38,12 +38,7 @@ class AcoountCategoryView(APIView):
     
     def delete(self, req, account_category_id):
         account_category = AccountCategory.objects.filter(id=account_category_id).first()
-
         if account_category == None:
             return Response({'detail': '레코드가 존재하지 않습니다.'},status=status.HTTP_404_NOT_FOUND)
-
-        if account_category.delete():    
-            return Response(status=status.HTTP_200_OK)
-        return Response({'detail': '이 카테고리는 사용중입니다.'}, status=status.HTTP_400_BAD_REQUEST)
-    
-        
+        account_category.toggle_active()
+        return Response(status=status.HTTP_200_OK)

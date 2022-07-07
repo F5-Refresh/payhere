@@ -1,5 +1,3 @@
-from datetime import datetime
-from unicodedata import category
 from rest_framework.test import APITestCase, force_authenticate, APIRequestFactory
 from account_books.models import AccountBook, AccountCategory, AccountDetail
 from account_books.views.account_category_views import AcoountCategoryView
@@ -23,7 +21,7 @@ class AccountCategoryTest(APITestCase):
         AccountCategory.objects.create(category_name='test4', user=self.user)
         AccountCategory.objects.create(category_name='test5', user=another_user)
         
-    # Note: 로그인에 대한 테스트 코드가 필요할까?
+    # Note: 로그인에 대한 테스트 코드가 필요할까? 코드 리팩토링 후 삭제 예정
      
     # def test_login_get(self):
     #     factory = APIRequestFactory()
@@ -51,7 +49,7 @@ class AccountCategoryTest(APITestCase):
         force_authenticate(request, user=self.user)
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        account_categorise= AccountCategory.objects.filter(user=self.user).order_by('category_name')
+        account_categorise= AccountCategory.objects.filter(user=self.user, delete_flag=False).order_by('category_name')
         # 데이터 확인 테스트
         for data, account_category in zip(response.data, account_categorise):
             self.assertEqual(data['id'], account_category.id)
@@ -86,31 +84,12 @@ class AccountCategoryTest(APITestCase):
         view = AcoountCategoryView.as_view()
         force_authenticate(request, user=self.user)
         response = view(request, account_category.id)
-        # 데이터 삭제 확인 테스트
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # 데이터 삭제 확인 테스트
-        if AccountCategory.objects.filter(id=account_category.id):
+        if AccountCategory.objects.filter(id=account_category.id, delete_flag=False):
             self.fail()
-    
-
-    def test_delete_fail_case(self):
-        # 카테고리를 참조하는 account_detail 레코드가 있을 경우 삭제불가
-        account_category = AccountCategory.objects.create(category_name='식비', user=self.user)
-        AccountDetail.objects.create(
-                                        written_date=datetime.now(), 
-                                        account_book=self.account_book, 
-                                        price=1000, 
-                                        description='친구랑 밥먹음', 
-                                        account_type='1',
-                                        account_category=account_category,
-                                    )
-
-        factory = APIRequestFactory()
-        request = factory.delete('/account_category')
-        view = AcoountCategoryView.as_view()
-        force_authenticate(request, user=self.user)
         response = view(request, account_category.id)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # 데이터 삭제 확인 테스트
-        if not AccountCategory.objects.filter(id=account_category.id):
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # 데이터 복구 확인 테스트
+        if AccountCategory.objects.filter(id=account_category.id, delete_flag=True):
             self.fail()
