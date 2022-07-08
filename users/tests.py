@@ -43,7 +43,7 @@ class UserSignUpTest(APITestCase):
         response = self.client.post('/users/signup', data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'email': ['올바른 이메일 주소를 입력하세요.']})
+        self.assertEqual(response.json(), {'email': ['유효한 이메일 주소를 입력하십시오.']})
 
     def test_fail_user_signup_due_to_already_existed_email(self):
         data = {'email': 'test02@gmail.com', 'nickname': 'DGK01', 'password': 'DGKtest12345!!'}
@@ -59,7 +59,7 @@ class UserSignUpTest(APITestCase):
         response = self.client.post('/users/signup', data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'email': ['필수 항목입니다.']})
+        self.assertEqual(response.json(), {'email': ['이 필드는 필수 항목입니다.']})
 
     def test_fail_user_signup_due_to_already_existed_email_n_nickname(self):
         data = {'email': 'test02@gmail.com', 'nickname': 'DGK02', 'password': 'DGKtest12345!!'}
@@ -77,7 +77,7 @@ class UserSignUpTest(APITestCase):
         response = self.client.post('/users/signup', data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'nickname': ['필수 항목입니다.']})
+        self.assertEqual(response.json(), {'nickname': ['이 필드는 필수 항목입니다.']})
 
     def test_fail_user_signup_due_to_already_existed_nickname(self):
         data = {'email': 'test01@gmail.com', 'nickname': 'DGK02', 'password': 'DGKtest12345!!'}
@@ -117,7 +117,7 @@ class UserSignUpTest(APITestCase):
         response = self.client.post('/users/signup', data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'password': ['필수 항목입니다.']})
+        self.assertEqual(response.json(), {'password': ['이 필드는 필수 항목입니다.']})
 
     def test_fail_user_signup_due_to_password_no_small_letters(self):
         data = {
