@@ -7,8 +7,11 @@ from rest_framework.test import APIClient, APIRequestFactory, APITestCase, force
 from users.models import User
 
 from account_books.models import AccountBook, AccountCategory, AccountDetail
-from account_books.views.account_book_detail import AccountBookDetailAPI
-from account_books.views.account_book_detail_list import AccountBookDetailListAPI
+from account_books.views.account_book_detail import (
+    AccountBookDetailAPI,
+    AccountBookDetailDeleteAPI,
+    AccountBookDetailListAPI,
+)
 from account_books.views.account_category_views import AcoountCategoryView
 
 
@@ -262,7 +265,17 @@ class AccountBookDetailListAPITestCase(APITestCase):
         )
 
         # 카테고리 생성
-        self.account_category = AccountCategory.objects.create(category_name='식비')
+        self.account_category = AccountCategory.objects.create(user=self.user, category_name='식비')
+
+        # 가계부 내역 생성
+        self.account_book_detail = AccountDetail.objects.create(
+            written_date='2022-07-06T15:07:35+09:00',
+            price=1500,
+            description="subway",
+            account_type=1,
+            account_category=self.account_category,
+            account_book=self.account_book,
+        )
 
     # [성공] 가계부 내역의 전체 리스트를 조회합니다.
     def test_success_get_account_book_list(self):
@@ -272,7 +285,10 @@ class AccountBookDetailListAPITestCase(APITestCase):
         access_token = response.data['access']
         headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
 
-        list_url = reverse('account-book:book-details', kwargs={'book_id': self.account_book.id})
+        list_url = reverse(
+            'account-book:book_detail',
+            kwargs={'book_id': self.account_book.id, 'accounts_id': self.account_book_detail.id},
+        )
         response = self.client.get(list_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -326,7 +342,7 @@ class AccountBookDetailAPITestCase(APITestCase):
     Writer: 남효정
     Date: 2022-07-06
 
-    각 가계부의 단일 내역을 Read, Update 합니다.
+    각 가계부의 단일 내역을 Read, Update, Delete 합니다.
     '''
 
     # 초기 데이터 생성
@@ -339,7 +355,7 @@ class AccountBookDetailAPITestCase(APITestCase):
         self.account_book = AccountBook.objects.create(user=self.user, book_name='test', budget='10000')
 
         # 카테고리 생성
-        self.account_category = AccountCategory.objects.create(category_name='식비')
+        self.account_category = AccountCategory.objects.create(user=self.user, category_name='식비')
 
         # 가계부 내역 생성
         self.account_book_detail = AccountDetail.objects.create(
@@ -360,7 +376,7 @@ class AccountBookDetailAPITestCase(APITestCase):
         headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
 
         object_url = reverse(
-            'account-book:book-detail',
+            'account-book:book_detail',
             kwargs={'book_id': self.account_book.id, 'accounts_id': self.account_book_detail.id},
         )
         response = self.client.get(object_url, **headers)
@@ -374,7 +390,7 @@ class AccountBookDetailAPITestCase(APITestCase):
         access_token = response.data['access']
         headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
 
-        object_url = reverse('account-book:book-detail', kwargs={'book_id': 0, 'accounts_id': 0})
+        object_url = reverse('account-book:book_detail', kwargs={'book_id': 0, 'accounts_id': 0})
         response = self.client.get(object_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -421,6 +437,27 @@ class AccountBookDetailAPITestCase(APITestCase):
         response = view(request, self.account_book.id, self.account_book_detail.id)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    # [성공] 가계부 내역 삭제: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 삭제를 테스트합니다. (delete_flag 상태만 변경됩니다.)
+    def test_success_patch_a_delete_flag(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
+        object_url = 'account-books//accounts//deleted'
+        data = {'written_date': '2022-07-06 05:46:57', 'price': 10000, 'account_type': 1, 'account_book': 1}
+
+        factory = APIRequestFactory()
+        request = factory.patch(object_url, data=data, format='json', **headers)
+        view = AccountBookDetailDeleteAPI.as_view()
+        response = view(request, self.account_book.id, self.account_book_detail.id)
+        if response.data['detail'] == '레코드가 삭제되었습니다.':
+            self.assertEqual(response.data['account_detail'].delete_flag, True)
+        else:
+            self.assertEqual(response.data['account_detail'].delete_flag, False)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 class AccountBookDetailListDeletedAPITestCase(APITestCase):
 
@@ -441,7 +478,7 @@ class AccountBookDetailListDeletedAPITestCase(APITestCase):
         self.account_book = AccountBook.objects.create(user=self.user, book_name='test', budget='10000')
 
         # 카테고리 생성
-        self.account_category = AccountCategory.objects.create(category_name='교통비')
+        self.account_category = AccountCategory.objects.create(user=self.user, category_name='교통비')
 
         # 가계부 내역 생성(1): 삭제 O
         self.account_book_detail = AccountDetail.objects.create(

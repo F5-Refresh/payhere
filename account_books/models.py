@@ -18,7 +18,11 @@ class AccountBook(TimeStampModel, DeleteFlag):
 
 
 # 가계부 상세내용
+<<<<<<< HEAD
 class AccountDetail(TimeStampModel):
+=======
+class AccountDetail(TimeStampModel, DeleteFlag):
+>>>>>>> 70f5a78 (#6-feat-가계부 내역 삭제 구현 및 테스트 코드 작성)
     account_category = models.ForeignKey(
         'AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING
     )
