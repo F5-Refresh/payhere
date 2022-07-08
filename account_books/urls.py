@@ -3,12 +3,13 @@ from django.urls import path
 from account_books.views.account_book_views import AccountBookView
 from account_books.views.account_category_views import AcoountCategoryView
 
-from .views.account_book_detail import AccountBookDetailAPI
-from .views.account_book_detail_list import AccountBookDetailListAPI
-from .views.account_book_detail_list_deleted import \
-    AccountBookDetailListDeletedAPI
+from .views.account_book_detail import (AccountBookDetailAPI,
+                                        AccountBookDetailDeleteAPI,
+                                        AccountBookDetailListAPI,
+                                        AccountBookDetailListDeletedAPI)
 
 app_name = 'account-book'
+
 
 urlpatterns = [
     path('account_category', AcoountCategoryView.as_view()),
@@ -20,12 +21,7 @@ urlpatterns = [
     path('account-books/deleted_list', AccountBookView.deleted_list),
     path('account-books/toggle_delete/<int:book_id>', AccountBookView.deleted_patch),
     path('account-books/<int:book_id>/accounts', AccountBookDetailListAPI.as_view(), name='books_details'),
-    path(
-        'account-books/<int:book_id>/accounts/deleted',
-        AccountBookDetailListDeletedAPI.as_view(),
-        name='book_details_deleted',
-    ),
-    path(
-        'account-books/<int:book_id>/accounts/<int:accounts_id>', AccountBookDetailAPI.as_view(), name='books_detail'
-    ),
+    path('account-books/<int:book_id>/accounts/deleted_list', AccountBookDetailListDeletedAPI.as_view(), name='book_details_deleted',),
+    path('account-books/<int:book_id>/accounts/<int:accounts_id>', AccountBookDetailAPI.as_view(), name='book_detail'),
+    path('account-books/<int:book_id>/accounts/<int:accounts_id>/deleted', AccountBookDetailDeleteAPI.as_view(), name='book_detail_deleted',),
 ]
