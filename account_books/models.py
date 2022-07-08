@@ -28,7 +28,7 @@ class AccountDetail(TimeStampModel, DeleteFlag):
     account_category = models.ForeignKey(
         'AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING
     )
-    account_book = models.ForeignKey('AccountBook', verbose_name='가계부', on_delete=models.CASCADE)
+    account_book = models.ForeignKey('AccountBook', related_name='account_details', verbose_name='가계부', on_delete=models.CASCADE)
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.CharField(blank=True, null=True, max_length=255)
