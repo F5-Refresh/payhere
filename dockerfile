@@ -5,9 +5,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /var/www/payhere
 
-COPY requirements.txt /var/www/payhere
+COPY requirements.txt .
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
-COPY . /var/www/payhere
