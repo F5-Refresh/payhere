@@ -34,7 +34,7 @@ class AccountBookView(APIView):
         serializer = AccountBookCreatePatchSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({'success': '가계부를 생성하였습니다'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 가계부를 수정합니다.
@@ -48,7 +48,7 @@ class AccountBookView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'success': '가계부를 수정하였습니다'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -59,6 +59,6 @@ class AccountBookView(APIView):
     )
     def toggle_active(request, book_id, format=None):
         account_book = get_object_or_404(AccountBook, id=book_id)
-        message = '레코드가 복구되었습니다.' if account_book.delete_flag else '레코드가 삭제되었습니다.'
+
         account_book.toggle_active()
-        return Response({'detail': message}, status=status.HTTP_200_OK)
+        return Response(account_book.delete_message, status=status.HTTP_200_OK)
