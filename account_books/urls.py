@@ -15,10 +15,18 @@ urlpatterns = [
     path('account-books', AccountBookView.as_view()),
     path('account-books/<int:book_id>', AccountBookView.as_view()),
     path('account-books/toggle_delete/<int:book_id>', AccountBookView.toggle_active),
-    path('account-books/deleted_list', AccountBookView.deleted_list),
-    path('account-books/toggle_delete/<int:book_id>', AccountBookView.deleted_patch),
     path('account-books/<int:book_id>/accounts', AccountBookDetailView.as_view(), name='book_details'),
-    path('account-books/<int:book_id>/accounts/<int:accounts_id>', AccountBookDetailView.as_view(), name='book_details'),
-    path('account-books/<int:book_id>/accounts/detail/<int:accounts_id>', AccountBookDetailView.detail, name='book_detail',),
-    path('account-books/<int:book_id>/accounts/<int:accounts_id>/toggle_active', AccountBookDetailView.toggle_active, name='book_details_deleted',),
+    path(
+        'account-books/<int:book_id>/accounts/<int:accounts_id>', AccountBookDetailView.as_view(), name='book_details'
+    ),
+    path(
+        'account-books/<int:book_id>/accounts/detail/<int:accounts_id>',
+        AccountBookDetailView.detail,
+        name='book_detail',
+    ),
+    path(
+        'account-books/<int:book_id>/accounts/<int:accounts_id>/toggle_active',
+        AccountBookDetailView.toggle_active,
+        name='book_details_deleted',
+    ),
 ]
