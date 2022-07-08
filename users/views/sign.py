@@ -1,9 +1,7 @@
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
-from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from users.serializers import (UserInfoSerializer, UserSignInSerializer,
                                UserSignUpSerializer)
@@ -36,11 +34,8 @@ class UserSignInView(APIView):
     Writer: 조병민
     Date: 2022-07-05
 
-    Post 메서드를 통해 로그인자격증명을 하며 자격증명 성공 시 토큰을 발급해준다.
+    post: 로그인 자격증명 성공 시 JWT를 발급
 
-    param :
-        email       - 이메일 주소
-        password    - 비밀번호
     """
 
     permission_classes = [AllowAny]
@@ -59,10 +54,8 @@ class UserSignOutView(APIView):
     Writer: 조병민
     Date: 2022-07-05
 
-    refresh_token을 받아 해당 토큰을 폐기한다.
+    post: refresh token을 받아 해당 access token을 폐기
 
-    param :
-        refresh_token       - 토큰
     """
 
     permission_classes = [IsAuthenticated]
