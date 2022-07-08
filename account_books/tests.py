@@ -254,7 +254,7 @@ class AccountBookDetailListAPITestCase(APITestCase):
     def setUp(self):
 
         # 유저 생성
-        self.user = User.objects.create_user('test2', 'test2@gmail.com', 'test2@A')
+        self.user = User.objects.create_user(nickname='test2', email='test2@gmail.com', password='test2@A!')
 
         # 가계부 생성
         self.account_book = AccountBook.objects.create(
@@ -267,12 +267,22 @@ class AccountBookDetailListAPITestCase(APITestCase):
     # [성공] 가계부 내역의 전체 리스트를 조회합니다.
     def test_success_get_account_book_list(self):
 
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         list_url = reverse('account-book:book-details', kwargs={'book_id': self.account_book.id})
-        response = self.client.get(list_url)
+        response = self.client.get(list_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # [성공] 가계부 내역에서 1개의 내역을 생성합니다.
     def test_success_post_account_book_object(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
 
         list_url = 'account-books//accounts'
 
@@ -286,20 +296,25 @@ class AccountBookDetailListAPITestCase(APITestCase):
         }
 
         factory = APIRequestFactory()
-        request = factory.post(list_url, data=data, format='json')
+        request = factory.post(list_url, data=data, format='json', **headers)
         view = AccountBookDetailListAPI.as_view()
         response = view(request, self.account_book.id)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     # [실패] 가계부 내역에서 1개의 내역을 생성합니다. / 빈 data를 보내서 테스트합니다.
-    def test_success_post_account_book_object(self):
+    def test_fail_post_account_book_object(self):
 
         list_url = 'account-books//accounts'
 
         data = {}
 
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         factory = APIRequestFactory()
-        request = factory.post(list_url, data=data, format='json')
+        request = factory.post(list_url, data=data, format='json', **headers)
         view = AccountBookDetailListAPI.as_view()
         response = view(request, self.account_book.id)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -318,7 +333,7 @@ class AccountBookDetailAPITestCase(APITestCase):
     def setUp(self):
 
         # 유저 생성
-        self.user = User.objects.create_user('test2', 'test2@gmail.com', 'test2@A')
+        self.user = User.objects.create_user(nickname='test2', email='test2@gmail.com', password='test2@A!')
 
         # 가계부 생성
         self.account_book = AccountBook.objects.create(user=self.user, book_name='test', budget='10000')
@@ -338,21 +353,39 @@ class AccountBookDetailAPITestCase(APITestCase):
 
     # [성공] 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 테스트합니다.
     def test_success_get_a_account_book_object(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         object_url = reverse(
             'account-book:book-detail',
             kwargs={'book_id': self.account_book.id, 'accounts_id': self.account_book_detail.id},
         )
-        response = self.client.get(object_url)
+        response = self.client.get(object_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # [실패] 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 테스트합니다. / 존재하지 않는 book_id, accounts_id로 테스트합니다.
-    def test_success_get_a_account_book_object(self):
+    def test_fail_get_a_account_book_object(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         object_url = reverse('account-book:book-detail', kwargs={'book_id': 0, 'accounts_id': 0})
-        response = self.client.get(object_url)
+        response = self.client.get(object_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     # [성공] 가계부 내역 수정: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 수정을 테스트합니다.
     def test_success_patch_a_account_book_object(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         object_url = 'account-books//accounts/'
 
         data = {
@@ -365,19 +398,25 @@ class AccountBookDetailAPITestCase(APITestCase):
         }
 
         factory = APIRequestFactory()
-        request = factory.patch(object_url, data=data, format='json')
+        request = factory.patch(object_url, data=data, format='json', **headers)
         view = AccountBookDetailAPI.as_view()
         response = view(request, self.account_book.id, self.account_book_detail.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # [실패] 가계부 내역 수정: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 수정을 테스트합니다. / 빈 데이터를 보내서 테스트 합니다.
-    def test_success_patch_a_account_book_object(self):
+    def test_fail_patch_a_account_book_object(self):
+
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         object_url = 'account-books//accounts/'
 
         data = {}
 
         factory = APIRequestFactory()
-        request = factory.patch(object_url, data=data, format='json')
+        request = factory.patch(object_url, data=data, format='json', **headers)
         view = AccountBookDetailAPI.as_view()
         response = view(request, self.account_book.id, self.account_book_detail.id)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -396,7 +435,7 @@ class AccountBookDetailListDeletedAPITestCase(APITestCase):
     def setUp(self):
 
         # 유저 생성
-        self.user = User.objects.create_user('test2', 'test2@gmail.com', 'test2@A')
+        self.user = User.objects.create_user(nickname='test2', email='test2@gmail.com', password='test2@A!')
 
         # 가계부 생성
         self.account_book = AccountBook.objects.create(user=self.user, book_name='test', budget='10000')
@@ -429,6 +468,11 @@ class AccountBookDetailListDeletedAPITestCase(APITestCase):
     # [성공] 가계부 내역에서 삭제된 리스트 조회를 테스트합니다.
     def test_success_get_deleted_account_book_lists(self):
 
+        user_data = {'email': 'test2@gmail.com', 'password': 'test2@A!'}
+        response = self.client.post('/users/signin', data=json.dumps(user_data), content_type='application/json')
+        access_token = response.data['access']
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {access_token}"}
+
         list_url = reverse('account-book:book_details_deleted', kwargs={'book_id': self.account_book.id})
-        response = self.client.get(list_url)
+        response = self.client.get(list_url, **headers)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

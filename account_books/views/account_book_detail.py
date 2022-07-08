@@ -2,6 +2,7 @@ from account_books.models import AccountDetail
 from account_books.serializers import AccountDetailSerializer
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,6 +21,7 @@ class AccountBookDetailAPI(APIView):
     '''
 
     serializer_class = AccountDetailSerializer
+    permission_classes = [IsAuthenticated]
 
     # 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 보여줍니다.
     def get(self, request, book_id, accounts_id):
