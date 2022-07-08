@@ -4,14 +4,16 @@ from account_books.models import AccountBook, AccountCategory, AccountDetail
 from account_books.views.account_book_views import AccountBookView
 from payhere.test_models import LoginTestModel
 from rest_framework import status
-from rest_framework.test import APIClient, APIRequestFactory, APITestCase, force_authenticate
+from rest_framework.test import (APIClient, APIRequestFactory, APITestCase,
+                                 force_authenticate)
 from users.models import User
 
 
 class AccountTest(APITestCase):
     '''가계부 View 테스트
-    전기원
-    2022-07-06
+
+    writer : 전기원
+    date : 2022-07-05
 
     가계부의 CRUD 를 테스트합니다.
     '''
@@ -35,7 +37,6 @@ class AccountTest(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         account_books = self.user.account_books.filter(delete_flag=True)
-        print(response.data)
         for data, book in zip(response.data, account_books):
             self.assertEqual(data['book_name'], book.book_name)
 
