@@ -26,7 +26,7 @@ class AcoountCategoryView(APIView):
     permission_classes = [IsAuthenticated]
 
     # 로그인 처리가 된 사용자의 삭제안된/삭제된 카테고리 리스트를 조회합니다.
-    @swagger_auto_schema(request_body=AcoountCategorySerializer, responses={200: AcoountCategorySerializer})
+    @swagger_auto_schema(responses={200: AcoountCategorySerializer})
     def get(self, req):
         account_categorise = AccountCategory.objects.filter(
             user=req.user.id, delete_flag=req.GET.get('deleted', False)
