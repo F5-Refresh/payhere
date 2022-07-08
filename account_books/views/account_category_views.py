@@ -47,11 +47,7 @@ class AcoountCategoryView(APIView):
     # 카테고리를 수정합니다.
     @swagger_auto_schema(request_body=AcoountCategoryPatchSerializer, responses={200: AcoountCategoryPatchSerializer})
     def patch(self, req, account_category_id):
-        account_category = AccountCategory.objects.filter(id=account_category_id).first()
-
-        if account_category == None:
-            return Response({'detail': '레코드가 존재하지 않습니다.'}, status=status.HTTP_404_NOT_FOUND)
-
+        account_category = get_object_or_404(AccountCategory, id=account_category_id, user=req.user.id)
         account_category = AcoountCategoryPatchSerializer(data=req.data, instance=account_category)
         if account_category.is_valid():
             account_category.save()
