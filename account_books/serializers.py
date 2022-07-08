@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import User
 
-from account_books.models import AccountBook, AccountCategory
+from account_books.models import AccountBook, AccountCategory, AccountDetail
 
 
 class AcoountCategorySerializer(serializers.ModelSerializer):
@@ -91,3 +91,14 @@ class AccountBookCreatePatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountBook
         fields = ['user', 'book_name', 'budget']
+        
+class AccountDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountDetail
+        fields = '__all__'
+        
+class AccountDetailPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountDetail
+        fields = ['written_date', 'price', 'description', 'account_type', 'account_category', 'account_book']
+

@@ -7,7 +7,7 @@ from django.db import models
 class AccountBook(TimeStampModel, DeleteFlag):
     user = models.ForeignKey('users.User', related_name='account_books', verbose_name='유저', on_delete=models.CASCADE)
     book_name = models.CharField(max_length=100)
-    budget = models.DecimalField(max_digits=9, decimal_places=0)  # 수입, 지출 구분
+    budget = models.DecimalField(max_digits=9, decimal_places=0)
     delete_flag = models.BooleanField(default=False)
 
     class Meta:
@@ -18,15 +18,21 @@ class AccountBook(TimeStampModel, DeleteFlag):
 
 
 # 가계부 상세내용
-class AccountDetail(TimeStampModel):
+class AccountDetail(TimeStampModel, DeleteFlag):
+
+    Type = [
+        ('0', "지출"),
+        ('1', "수입"),
+    ]
+
     account_category = models.ForeignKey(
         'AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING
     )
-    account_book = models.ForeignKey('AccountBook', verbose_name='가계부', on_delete=models.CASCADE)
+    account_book = models.ForeignKey('AccountBook', related_name='account_details', verbose_name='가계부', on_delete=models.CASCADE)
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.CharField(blank=True, null=True, max_length=255)
-    account_type = models.CharField(max_length=10)  # 수입, 지출 구분
+    account_type = models.CharField(choices=Type, default='0', max_length=10)  # 수입, 지출 구분
     delete_flag = models.BooleanField(default=False)
 
     class Meta:

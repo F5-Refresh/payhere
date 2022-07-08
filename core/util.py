@@ -8,8 +8,6 @@ class DeleteFlag:
     delete_flag에 대한 처리를 담당합니다.
     '''
 
-    # 삭제/복구 처리를 합니다. 삭제시 True 복구시 False를 되돌려 줍니다.
-
     def toggle_active(self):
         self.delete_flag = not self.delete_flag
         self.save()
