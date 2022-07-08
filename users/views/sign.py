@@ -5,23 +5,19 @@ from rest_framework.response import Response
 from rest_framework.views import APIView, status
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.serializers import UserInfoSerializer, UserSignInSerializer, UserSignUpSerializer
+from users.serializers import (UserInfoSerializer, UserSignInSerializer,
+                               UserSignUpSerializer)
 
 
 # Create your views here.
 class UserSignUpView(APIView):
-    """회원가입 구현 View
+    '''회원가입 구현 View
 
     Writer: 김동규
     Date: 2022-07-05
 
     Post 메서드를 통해 회원가입 조건을 만족하면 DB에 회원가입 정보를 저장한다.
-
-    param :
-        email       - 이메일 주소
-        nickname    - 닉네임
-        password    - 비밀번호
-    """
+    '''
 
     permission_classes = [AllowAny]
 
