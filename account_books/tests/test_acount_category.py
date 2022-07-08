@@ -24,7 +24,7 @@ class AccountCategoryTest(APITestCase):
         AccountCategory.objects.create(category_name='test1', user=self.user)
         AccountCategory.objects.create(category_name='test2', user=self.user)
         AccountCategory.objects.create(category_name='test3', user=self.user)
-        AccountCategory.objects.create(category_name='test4', user=self.user)
+        AccountCategory.objects.create(category_name='test4', user=self.user, delete_flag=True)
         AccountCategory.objects.create(category_name='test5', user=another_user)
 
     # 카테고리 리스트가 정상적으로 조회되었는지 테스트합니다.
@@ -36,6 +36,15 @@ class AccountCategoryTest(APITestCase):
         account_categorise = AccountCategory.objects.filter(user=self.user, delete_flag=False).order_by(
             'category_name'
         )
+        for data, account_category in zip(response.data, account_categorise):
+            self.assertEqual(data['id'], account_category.id)
+
+        response = self.login_test.login_user_case(
+            view=AcoountCategoryView.as_view(), url='/account_category', method='get', data={'deleted': True}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        account_categorise = AccountCategory.objects.filter(user=self.user, delete_flag=True).order_by('category_name')
         for data, account_category in zip(response.data, account_categorise):
             self.assertEqual(data['id'], account_category.id)
 
