@@ -79,7 +79,7 @@ class AccountBookDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # [성공] 가계부 내역 수정: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 수정을 테스트합니다.
-    def test_success_patch_a_account_book_object(self):
+    def test_success_patch_account_book_object(self):
 
         data = {
             'written_date': '2022-07-06T15:07:35+09:00',
@@ -102,7 +102,7 @@ class AccountBookDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # [실패] 가계부 내역 수정: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 수정을 테스트합니다. / 빈 데이터를 보내서 테스트 합니다.
-    def test_fail_patch_a_account_book_object(self):
+    def test_fail_patch_account_book_object(self):
 
         data = {}
         url = 'account-books//accounts/detail/'
@@ -117,7 +117,7 @@ class AccountBookDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # [성공] 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 테스트합니다.
-    def test_success_get_a_account_book_object(self):
+    def test_success_get_account_book_object(self):
 
         url = 'account-books//accounts/detail/'
         response = self.login_test.login_user_case(
@@ -130,7 +130,7 @@ class AccountBookDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     # [실패] 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 테스트합니다. / 존재하지 않는 book_id, accounts_id로 테스트합니다.
-    def test_fail_get_a_account_book_object(self):
+    def test_fail_get_account_book_object(self):
 
         url = 'account-books//accounts/detail/'
         response = self.login_test.login_user_case(0, 0, view=AccountBookDetailView.detail, url=url, method='get')
