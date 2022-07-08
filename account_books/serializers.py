@@ -73,9 +73,14 @@ class AccountBookListSerializer(serializers.ModelSerializer):
     가계부의 list의 serializer 입니다.
     '''
 
+    calc_money = serializers.SerializerMethodField()
+
     class Meta:
         model = AccountBook
-        fields = ['book_name', 'budget', 'delete_flag']
+        fields = ['book_name', 'budget', 'calc_money', 'delete_flag']
+
+    def get_calc_money(self, account_book):
+        return account_book.calc_money()
 
 
 # 생성, 수정
@@ -91,14 +96,15 @@ class AccountBookCreatePatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountBook
         fields = ['user', 'book_name', 'budget']
-        
+
+
 class AccountDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountDetail
         fields = '__all__'
-        
+
+
 class AccountDetailPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountDetail
         fields = ['written_date', 'price', 'description', 'account_type', 'account_category', 'account_book']
-

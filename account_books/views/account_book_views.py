@@ -31,7 +31,12 @@ class AccountBookView(APIView):
         request_body=AccountBookCreatePatchSerializer, responses={201: AccountBookCreatePatchSerializer}
     )
     def post(self, request):
-        serializer = AccountBookCreatePatchSerializer(data=request.data)
+        queryset = {
+            'user': request.user.id,
+            'book_name': request.data.get('book_name'),
+            'budget': request.data.get('budget'),
+        }
+        serializer = AccountBookCreatePatchSerializer(data=queryset)
         if serializer.is_valid():
             serializer.save()
             return Response({'success': '가계부를 생성하였습니다'}, status=status.HTTP_201_CREATED)
@@ -43,8 +48,12 @@ class AccountBookView(APIView):
     )
     def patch(self, request, book_id, format=None):
         account_book = get_object_or_404(AccountBook, id=book_id)
-
-        serializer = AccountBookCreatePatchSerializer(data=request.data, instance=account_book)
+        queryset = {
+            'user': request.user.id,
+            'book_name': request.data.get('book_name'),
+            'budget': request.data.get('budget'),
+        }
+        serializer = AccountBookCreatePatchSerializer(data=queryset, instance=account_book)
 
         if serializer.is_valid():
             serializer.save()
@@ -58,7 +67,7 @@ class AccountBookView(APIView):
         request_body=AccountBookCreatePatchSerializer, responses={200: AccountBookCreatePatchSerializer}
     )
     def toggle_active(request, book_id, format=None):
-        account_book = get_object_or_404(AccountBook, id=book_id)
+        account_book = get_object_or_404(AccountBook, user=request.user.id, id=book_id)
 
         account_book.toggle_active()
         return Response(account_book.delete_message, status=status.HTTP_200_OK)
