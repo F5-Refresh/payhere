@@ -20,12 +20,16 @@ class AccountBookView(APIView):
 
     permission_classes = [IsAuthenticated]
     # 가계부를 조회합니다.
+    @swagger_auto_schema(request_body=AccountBookListSerializer, responses={200: AccountBookListSerializer})
     def get(self, request):
-        queryset = AccountBook.objects.filter(delete_flag=False)
+        queryset = AccountBook.objects.filter(user=request.user.id, delete_flag=request.GET.get('deleted', False))
         serializer = AccountBookListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     # 가계부를 생성합니다.
+    @swagger_auto_schema(
+        request_body=AccountBookCreatePatchSerializer, responses={201: AccountBookCreatePatchSerializer}
+    )
     def post(self, request):
         serializer = AccountBookCreatePatchSerializer(data=request.data)
         if serializer.is_valid():
@@ -34,6 +38,9 @@ class AccountBookView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 가계부를 수정합니다.
+    @swagger_auto_schema(
+        request_body=AccountBookCreatePatchSerializer, responses={200: AccountBookCreatePatchSerializer}
+    )
     def patch(self, request, book_id, format=None):
         account_book = get_object_or_404(AccountBook, id=book_id)
 
@@ -47,15 +54,11 @@ class AccountBookView(APIView):
 
     # 가계부를 삭제합니다.
     @api_view(['PATCH'])
-    def deleted_patch(request, book_id, format=None):
+    @swagger_auto_schema(
+        request_body=AccountBookCreatePatchSerializer, responses={200: AccountBookCreatePatchSerializer}
+    )
+    def toggle_active(request, book_id, format=None):
         account_book = get_object_or_404(AccountBook, id=book_id)
         message = '레코드가 복구되었습니다.' if account_book.delete_flag else '레코드가 삭제되었습니다.'
         account_book.toggle_active()
         return Response({'detail': message}, status=status.HTTP_200_OK)
-
-    # 가계부의 삭제리스트를 조회합니다.
-    @api_view(['GET'])
-    def deleted_list(format=None):
-        queryset = AccountBook.objects.filter(delete_flag=True)
-        serializer = AccountBookListSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
