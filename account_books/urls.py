@@ -9,6 +9,5 @@ urlpatterns = [
     path('account_category/toggle_active/<int:account_category_id>', AcoountCategoryView.toggle_active),
     path('account-books', AccountBookView.as_view()),
     path('account-books/<int:book_id>', AccountBookView.as_view()),
-    path('account-books/deleted_list', AccountBookView.deleted_list),
-    path('account-books/toggle_delete/<int:book_id>', AccountBookView.deleted_patch),
+    path('account-books/toggle_delete/<int:book_id>', AccountBookView.toggle_active),
 ]
