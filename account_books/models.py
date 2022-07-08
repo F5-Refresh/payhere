@@ -18,11 +18,13 @@ class AccountBook(TimeStampModel, DeleteFlag):
 
 
 # 가계부 상세내용
-<<<<<<< HEAD
-class AccountDetail(TimeStampModel):
-=======
 class AccountDetail(TimeStampModel, DeleteFlag):
->>>>>>> 70f5a78 (#6-feat-가계부 내역 삭제 구현 및 테스트 코드 작성)
+
+    Type = [
+        ('0', "지출"),
+        ('1', "수입"),
+    ]
+
     account_category = models.ForeignKey(
         'AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING
     )
@@ -30,7 +32,7 @@ class AccountDetail(TimeStampModel, DeleteFlag):
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.CharField(blank=True, null=True, max_length=255)
-    account_type = models.CharField(max_length=10)  # 수입, 지출 구분
+    account_type = models.CharField(choices=Type, default='0', max_length=10)  # 수입, 지출 구분
     delete_flag = models.BooleanField(default=False)
 
     class Meta:
