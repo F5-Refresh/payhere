@@ -28,7 +28,7 @@ class AccountBookDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     # 가계부 내역 전체 리스트: 가계부 id를 받고, 해당 가계부의 전체 내역을 보여줍니다. + 쿼리스트링으로 delete_flag 여부에 따른 리스트 필터링 가능.
-    @swagger_auto_schema(request_body=AccountDetailSerializer, responses={200: AccountDetailSerializer})
+    @swagger_auto_schema(responses={200: AccountDetailSerializer})
     def get(self, request, book_id):
         account_book = get_object_or_404(AccountBook, id=book_id, user=request.user.id)
         account_details = account_book.account_details.filter(delete_flag=request.GET.get('deleted', False))
@@ -62,7 +62,7 @@ class AccountBookDetailView(APIView):
 
     # 가계부 내역 상세조회: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역을 보여줍니다.
     @api_view(['GET'])
-    @swagger_auto_schema(request_body=AccountDetailPostSerializer, responses={200: AccountDetailPostSerializer})
+    @swagger_auto_schema(responses={200: AccountDetailPostSerializer})
     def detail(request, book_id, accounts_id):
         account_book = get_object_or_404(AccountBook, id=book_id, user=request.user.id)  # 가계부
         account_detail = get_object_or_404(AccountDetail, account_book=account_book.id, id=accounts_id)  # 가계부 내역

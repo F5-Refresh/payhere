@@ -20,7 +20,7 @@ class AccountBookView(APIView):
 
     permission_classes = [IsAuthenticated]
     # 가계부를 조회합니다.
-    @swagger_auto_schema(request_body=AccountBookListSerializer, responses={200: AccountBookListSerializer})
+    @swagger_auto_schema(responses={200: AccountBookListSerializer})
     def get(self, request):
         queryset = AccountBook.objects.filter(user=request.user.id, delete_flag=request.GET.get('deleted', False))
         serializer = AccountBookListSerializer(queryset, many=True)
