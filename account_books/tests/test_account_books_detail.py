@@ -15,6 +15,12 @@ class AccountBookDetailTestCase(APITestCase):
     Writer: 남효정
     Date: 2022-07-06
 
+    가계부 내역의 CRUD 구현
+    GET: 가계부 내역 전체 리스트
+    POST: 가계부 내역 생성
+    PATCH: 가계부 내역 수정
+    detail.GET: 가계부 내역 상세조회
+    toggle_active.PATCH: 가계부 내역 삭제, 복구
     '''
 
     # 초기 데이터 생성
@@ -137,7 +143,7 @@ class AccountBookDetailTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     # [성공] 가계부 내역 삭제: 가계부 id, 가계부 내역 id를 받고 해당되는 단일 내역 삭제를 테스트합니다. (delete_flag 상태만 변경됩니다.)
-    def test_success_patch_a_delete_flag(self):
+    def test_success_patch_delete_flag(self):
 
         url = 'account-books//accounts//deleted'
 
