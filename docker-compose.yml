@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: always
+    env_file:
+      - .env
+    command:
+      - bash
+      - -c
+      - |
+        python manage.py wait_for_db -t 120
+        python manage.py migrate
+        echo yes | python manage.py collectstatic
+        gunicorn payhere.wsgi:application --bind 0.0.0.0:8000
+    stdin_open: true
+    volumes:
+      - .:/var/www/payhere
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    env_file:
+      - .env
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MYSQL_TCP_PORT=${MYSQL_TCP_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  nginx:
+    image: nginx:1.21
+    restart: always
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - web
