@@ -65,6 +65,14 @@ class AcoountCategoryPatchSerializer(serializers.ModelSerializer):
 
 # 리스트
 class AccountBookListSerializer(serializers.ModelSerializer):
+    '''가계부 serializer
+
+    writer : 전기원
+    date : 2022-07-05
+
+    가계부의 list의 serializer 입니다.
+    '''
+
     class Meta:
         model = AccountBook
         fields = ['book_name', 'budget', 'delete_flag']
@@ -72,6 +80,14 @@ class AccountBookListSerializer(serializers.ModelSerializer):
 
 # 생성, 수정
 class AccountBookCreatePatchSerializer(serializers.ModelSerializer):
+    '''가계부 serializer
+
+    writer : 전기원
+    date : 2022-07-05
+
+    가계부를 생성,수정하는 serializer입니다
+    '''
+
     class Meta:
         model = AccountBook
         fields = ['user', 'book_name', 'budget']

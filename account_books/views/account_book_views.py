@@ -1,5 +1,6 @@
 from account_books.models import AccountBook
 from account_books.serializers import AccountBookCreatePatchSerializer, AccountBookListSerializer
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -9,10 +10,13 @@ from rest_framework.views import APIView
 
 
 class AccountBookView(APIView):
-    """
-    date : 2022-07-05
+    '''가계부 구현 View
+
     writer : 전기원
-    """
+    date : 2022-07-05
+
+    가계부의 CRUD 와 삭제리스트 구현
+    '''
 
     permission_classes = [IsAuthenticated]
     # 가계부를 조회합니다.
