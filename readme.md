@@ -82,15 +82,13 @@
 |로그아웃| POST| users/signout
 |가계부 작성| POST| account-books
 |가계부 리스트| GET| account-books
-|가계부 삭제 리스트| GET| account-books/deleted_list
 |가계부 수정| PATCH| account-books<int: book_id>
-|가계부 삭제,취소| PATCH| account-books<int: book_id>
+|가계부 삭제,취소| PATCH| account-books/toggle_delete/<int: book_id>
 |가계부 내역 작성| POST| account-books/<int: book_id>/accounts
 |가계부 내역 리스트| GET| account-books/<int: book_id>/accounts
-|가계부 내역 삭제 리스트| GET| account-books/<int: book_id>/accounts/deleted_list
 |가계부 내역 상세조회| GET| account-books/<int: book_id>/accounts/<int: accounts_id>
 |가계부 내역 수정| PATCH| account-books/<int: book_id>/accounts/<int: accounts_id>
-|가계부 내역 삭제,취소| PATCH| account-books/<int: book_id>/accounts/<int: accounts_id>/togle_delete
+|가계부 내역 삭제,취소| PATCH| account-books/<int: book_id>/accounts/<int: accounts_id>/toggle_active
 |카테고리 작성| POST| account_category
 |카테고리 리스트| GET| account_category
 |카테고리 수정| PATCH| account_category/<int: account_category_id>
