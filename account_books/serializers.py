@@ -5,6 +5,15 @@ from account_books.models import AccountBook, AccountCategory
 
 
 class AcoountCategorySerializer(serializers.ModelSerializer):
+
+    '''카테고리 Serializer
+
+    Writer: 이동연
+    Date: 2022-07-05
+
+    카테고리 조회 Serializer 입니다.
+    '''
+
     class Meta:
         model = AccountCategory
         fields = ['id', 'user', 'category_name', 'created_at', 'modified_at']
@@ -12,7 +21,16 @@ class AcoountCategorySerializer(serializers.ModelSerializer):
         ordering = ['category_name']
 
 
-class AcoountCategoryPostSerializer(serializers.ModelSerializer):
+class AcoountCategoryPostializer(serializers.ModelSerializer):
+
+    '''카테고리 Serializer
+
+    Writer: 이동연
+    Date: 2022-07-05
+
+    카테고리 생성 Serializer 입니다.
+    '''
+
     def create(self, validated_data):
         user_id = validated_data.get('user').id
         user = User.objects.get(id=user_id)
@@ -24,7 +42,16 @@ class AcoountCategoryPostSerializer(serializers.ModelSerializer):
         fields = ['category_name', 'user']
 
 
-class AcoountCategoryPutSerializer(serializers.ModelSerializer):
+class AcoountCategoryPatchSerializer(serializers.ModelSerializer):
+
+    '''카테고리 Serializer
+
+    Writer: 이동연
+    Date: 2022-07-05
+
+    카테고리 수정 Serializer 입니다.
+    '''
+
     def update(self, instance, validated_data):
         instance.category_name = validated_data.get('category_name')
         instance.save()
