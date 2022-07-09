@@ -1,6 +1,8 @@
 from core.models import TimeStamp as TimeStampModel
 from core.util import DeleteFlag
 from django.db import models
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 
 
 # 가계부
@@ -16,6 +18,21 @@ class AccountBook(TimeStampModel, DeleteFlag):
     def __str__(self):
         return f'user: {self.user.email} / book_name: {self.book_name}'
 
+    # 가계부의 사용 할 수 있는 돈, 지출, 수입을 계산하며 딕셔너리 형태로 반환합니다.
+    # 수입은 사용 할 수 있는 돈에 포함하지 않습니다.
+    def calc_money(self):
+        use_money = (
+            self.account_details.filter(account_type=0, delete_flag=False).aggregate(total=Sum('price'))['total'] or 0
+        )
+        get_money = (
+            self.account_details.filter(account_type=1, delete_flag=False).aggregate(total=Sum('price'))['total'] or 0
+        )
+        return {
+            'total': int(self.budget - use_money),
+            'used_money': int(use_money),
+            'get_money': int(get_money),
+        }
+
 
 # 가계부 상세내용
 class AccountDetail(TimeStampModel, DeleteFlag):
@@ -28,7 +45,9 @@ class AccountDetail(TimeStampModel, DeleteFlag):
     account_category = models.ForeignKey(
         'AccountCategory', related_name='account_details', verbose_name='카테고리', null=True, on_delete=models.DO_NOTHING
     )
-    account_book = models.ForeignKey('AccountBook', related_name='account_details', verbose_name='가계부', on_delete=models.CASCADE)
+    account_book = models.ForeignKey(
+        'AccountBook', related_name='account_details', verbose_name='가계부', on_delete=models.CASCADE
+    )
     written_date = models.DateTimeField()
     price = models.DecimalField(max_digits=9, decimal_places=0)
     description = models.CharField(blank=True, null=True, max_length=255)

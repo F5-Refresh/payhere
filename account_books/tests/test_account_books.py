@@ -4,8 +4,7 @@ from account_books.models import AccountBook, AccountCategory, AccountDetail
 from account_books.views.account_book_views import AccountBookView
 from payhere.test_models import LoginTestModel
 from rest_framework import status
-from rest_framework.test import (APIClient, APIRequestFactory, APITestCase,
-                                 force_authenticate)
+from rest_framework.test import APIClient, APITestCase
 from users.models import User
 
 
@@ -66,18 +65,6 @@ class AccountTest(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    # user가 없어 가계부 수정이 불가능한 실패테스트입니다.
-    def test_fail_update_accountbook_due_to_id_not_existed(self):
-        data = AccountBook.objects.create(user=self.user, book_name='데이트통장', budget=2222222)
-        url = f'/account-books/{data.id}'
-        revised_data = {'user': 4, 'book_name': '수정 데이트통장', 'budget': 333333}
-
-        response = self.login_test.login_user_case(
-            data.id, view=AccountBookView.as_view(), url=url, method='patch', data=revised_data
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     # 가계부를 삭제하는 것을 성공하는 테스트입니다.
     def test_get_deleted(self):
